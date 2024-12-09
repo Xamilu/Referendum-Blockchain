@@ -17,6 +17,6 @@ export interface Proposal {
     account: string | null;
     connect: () => Promise<void>;
     disconnect: () => void;
-    provider: any;
     signer: any;
+    
   }
