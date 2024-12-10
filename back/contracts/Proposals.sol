@@ -29,9 +29,14 @@ contract Proposals {
         return address(newProposition);
     }
 
-    function getAllPropositions() external view returns (Proposition[] memory) {
-        return allPropositions;
+    function getAllPropositions() external view returns (address[] memory) {
+    address[] memory propositionAddresses = new address[](allPropositions.length);
+    for (uint i = 0; i < allPropositions.length; i++) {
+        propositionAddresses[i] = address(allPropositions[i]);
     }
+    return propositionAddresses;
+}
+
 
     function getUserPropositions(address _user) external view returns (Proposition[] memory) {
         return userPropositions[_user];

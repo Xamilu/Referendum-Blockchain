@@ -7,40 +7,9 @@ import { Proposal } from '../type';
 export const useContracts = (signer:any) => {
   const [proposalsContract, setProposalsContract] = useState<any>(null);
   const [provider, setProvider] = useState<any>(null);
+  const [proposals, setProposals] = useState<string[]>([]);  // Liste des propositions
 
-  // Initialiser le provider et signer depuis MetaMask (ou un autre portefeuille)
-  useEffect(() => {
-    const initializeSigner = async () => {
-      if (window.ethereum) {
-        try {
-          // Demander la connexion de l'utilisateur à MetaMask
-          await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-          // Créer un provider avec MetaMask
-          const _provider = new ethers.BrowserProvider(window.ethereum);
-          setProvider(_provider);  // Stocke le provider dans l'état
-
-          // Obtenir le signer
-          const signer = await _provider.getSigner();
-
-          // Initialiser le contrat avec le signer
-          const contract = new ethers.Contract(
-            '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', // Remplace par l'adresse du contrat des propositions
-            ProposalsABI.abi,
-            signer
-          );
-          setProposalsContract(contract);
-        } catch (error) {
-          console.error("Erreur de connexion à MetaMask", error);
-        }
-      } else {
-        console.error("MetaMask n'est pas détecté. Veuillez installer MetaMask.");
-      }
-    };
-
-    initializeSigner();
-  }, []); // Le useEffect ne se lance qu'une seule fois au montage du composant
-
+ 
   // Fonction pour créer une proposition
   const createProposal = async (title: string, description: string) => {
     if (!proposalsContract || !signer || !provider) {
@@ -49,14 +18,12 @@ export const useContracts = (signer:any) => {
     }
 
     try {
-      // Utiliser signer.provider pour accéder au Provider et appeler getNetwork
-      const network = await provider.getNetwork(); // Utilisation explicite du provider
-      const AMOY_CHAIN_ID = 80002n;
-
-      console.log(network.chainId);
+      const network = await provider.getNetwork();  // Utilisation explicite du provider
+      const AMOY_CHAIN_ID = 80002;
+      const networkChainId = Number(network.chainId);
 
       // Vérification du réseau
-      if (network.chainId !== AMOY_CHAIN_ID) {
+      if (networkChainId !== AMOY_CHAIN_ID) {
         throw new Error("Veuillez vous connecter au réseau Polygon Amoy");
       }
 
@@ -72,9 +39,15 @@ export const useContracts = (signer:any) => {
 
   // Fonction pour récupérer les propositions
   const fetchProposals = async (): Promise<string[]> => {
+    console.log("proposalsContractBefore",proposalsContract);
+    console.log('tmp',await proposalsContract.getAllPropositions())
+
     if (!proposalsContract) return [];
+    console.log("proposalsContractAfter",proposalsContract);
+
     try {
       const proposals = await proposalsContract.getAllPropositions();
+      console.log("Propositions récupérées:", proposals);
       return proposals;
     } catch (error) {
       console.error("Erreur lors de la récupération des propositions", error);
@@ -106,7 +79,6 @@ export const useContracts = (signer:any) => {
       return null;
     }
   };
-
   // Fonction pour voter pour une proposition
   const voteForProposal = async (proposalAddress: string) => {
     if (!signer) return null;
@@ -135,11 +107,52 @@ export const useContracts = (signer:any) => {
     }
   };
 
+   // Initialiser le provider et signer depuis MetaMask (ou un autre portefeuille)
+   useEffect(() => {
+    const initializeSigner = async () => {
+      if (window.ethereum) {
+        try {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+          const _provider = new ethers.BrowserProvider(window.ethereum);
+          setProvider(_provider);
+
+          const signer = await _provider.getSigner();
+          const contract = new ethers.Contract(
+            '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199',  // Remplace avec l'adresse de ton contrat
+            ProposalsABI.abi,
+            signer
+          );
+          setProposalsContract(contract);
+        } catch (error) {
+          console.error("Erreur de connexion à MetaMask", error);
+        }
+      } else {
+        console.error("MetaMask n'est pas détecté. Veuillez installer MetaMask.");
+      }
+    };
+
+    initializeSigner();
+  }, []);  // Le useEffect ne se lance qu'une seule fois au montage du composant
+
+  // Utiliser un autre useEffect pour récupérer les propositions après l'initialisation du contrat
+  useEffect(() => {
+    if (proposalsContract) {
+        console.log("proposalsContract",proposalsContract);
+      const loadProposals = async () => {
+        const proposalList = await fetchProposals();
+        setProposals(proposalList);
+      };
+      loadProposals();
+    }
+  }, [proposalsContract]);
+
   return {
     createProposal,
     fetchProposals,
     fetchProposalDetails,
     voteForProposal,
-    voteAgainstProposal
+    voteAgainstProposal,
+    proposals
   };
 };
