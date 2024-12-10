@@ -34,19 +34,19 @@ export const ProposalList: React.FC<ProposalListProps> = ({ signer, onSelectProp
     <List
       grid={{ gutter: 16, column: 4 }}
       dataSource={proposalDetails}
-      renderItem={(proposal) => (
+      renderItem={(proposals) => (
         <List.Item>
           <Card 
-            title={proposal.title}
-            extra={<a onClick={() => onSelectProposal(proposal.creator)}>Détails</a>}
+            title={proposals.title}
+            extra={<a onClick={() => onSelectProposal(proposals.creator)}>Détails</a>}
           >
             <Typography.Paragraph ellipsis={{ rows: 2 }}>
-              {proposal.description}
+              {proposals.description}
             </Typography.Paragraph>
             <div>
-              <p>Pour: {proposal.percentFor}%</p>
-              <p>Contre: {proposal.percentAgainst}%</p>
-              <p>Total votes: {proposal.totalVotes}</p>
+              <p>Pour: {proposals.percentFor}%</p>
+              <p>Contre: {proposals.percentAgainst}%</p>
+              <p>Total votes: {proposals.totalVotes}</p>
             </div>
           </Card>
         </List.Item>
