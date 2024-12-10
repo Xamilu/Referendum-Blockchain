@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import ProposalsABI from '../../../back/artifacts/contracts/Proposals.sol/Proposals.json';
-import PropositionABI from '../../../back/artifacts/contracts/Proposition.sol/Proposition.json';
-import { Proposal } from '../type';
+import ProposalsABI from "../abi/ProposalsABI.json"
+import PropositionABI from "../abi/PropositionABI.json"
+import { Proposal } from '../types/type';
 
-const PROPOSALS_CONTRACT_ADDRESS = 'YOUR_DEPLOYED_PROPOSALS_CONTRACT_ADDRESS';
+const PROPOSALS_CONTRACT_ADDRESS = '0xe28FBBaDdA81280CCb05B39875081bbcd2C9732f';
 
 export const useContracts = (signer: any) => {
   const [proposalsContract, setProposalsContract] = useState<any>(null);
 
 useEffect(() => {
     if (signer) {
-        const contract = new ethers.Contract(PROPOSALS_CONTRACT_ADDRESS, ProposalsABI.abi, signer);
+        const contract = new ethers.Contract(PROPOSALS_CONTRACT_ADDRESS, ProposalsABI, signer);
         setProposalsContract(contract);
     }
 }, [signer]);
@@ -53,7 +53,7 @@ const createProposal = async (title: string, description: string) => {
   const fetchProposalDetails = async (proposalAddress: string): Promise<Proposal | null> => {
     if (!signer) return null;
     try {
-    const propositionContract = new ethers.Contract(proposalAddress, PropositionABI.abi, signer);
+    const propositionContract = new ethers.Contract(proposalAddress, PropositionABI, signer);
     const details = await propositionContract.getPropositionDetails();
       return {
         creator: details[0],
@@ -77,7 +77,7 @@ const createProposal = async (title: string, description: string) => {
   const voteForProposal = async (proposalAddress: string) => {
     if (!signer) return null;
     try {
-      const propositionContract = new ethers.Contract(proposalAddress, PropositionABI.abi, signer);
+      const propositionContract = new ethers.Contract(proposalAddress, PropositionABI, signer);
       const tx = await propositionContract.voteFor();
       await tx.wait();
       return tx;
@@ -90,7 +90,7 @@ const createProposal = async (title: string, description: string) => {
   const voteAgainstProposal = async (proposalAddress: string) => {
     if (!signer) return null;
     try {
-      const propositionContract = new ethers.Contract(proposalAddress, PropositionABI.abi, signer);
+      const propositionContract = new ethers.Contract(proposalAddress, PropositionABI, signer);
       const tx = await propositionContract.voteAgainst();
       await tx.wait();
       return tx;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { useContracts } from './hooks/useContracts';
+import { useContracts } from '../hooks/useContracts';
 
 interface CreateProposalProps {
   signer: any;

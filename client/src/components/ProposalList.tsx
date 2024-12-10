@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { List, Card, Typography } from 'antd';
-import { useContracts } from './hooks/useContracts';
-import { Proposal } from './type';
+import { useContracts } from '../hooks/useContracts';
+import { Proposal } from '../types/type';
 
 
 interface ProposalListProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { Web3ContextType } from './type';
+import { Web3ContextType } from '../types/type';
 
 interface ConnectWalletProps {
   web3Context: Web3ContextType;

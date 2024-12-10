@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Progress, Button, message } from 'antd';
-import { useContracts } from './hooks/useContracts';
-import { Proposal } from './type';
+import { useContracts } from '../hooks/useContracts';
+import { Proposal } from '../types/type';
 
 
 interface ProposalDetailsProps {

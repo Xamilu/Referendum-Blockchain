@@ -5,7 +5,7 @@ async function main() {
     const proposals = await Proposals.deploy();
     await proposals.waitForDeployment();
 
-    console.log(`Lottery deployed to: ${await proposals.getAddress()}`);
+    console.log(`Proposals deployed to: ${await proposals.getAddress()}`);
 }
 
 main().catch((error) => {

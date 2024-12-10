@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { Web3ContextType } from '../type';
+import { Web3ContextType } from '../types/type';
 import { Web3Provider } from '@ethersproject/providers';
 
 
 declare global {
     interface Window {
       ethereum?: {
+        on(arg0: string, arg1: (accounts: string[]) => void): unknown;
         request: (request: { method: string }) => Promise<string[]>;
         isMetaMask?: boolean;
       };

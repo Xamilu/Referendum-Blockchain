@@ -1,12 +1,12 @@
 import  React,{ useState } from 'react';
 import { Layout, Typography } from 'antd';
 import { useWeb3 } from './hooks/useWeb3';
-import { ConnectWallet } from './ConnectWallet';
-import { CreateProposal } from './CreateProposal';
+import { ConnectWallet } from './components/ConnectWallet';
+import { CreateProposal } from './components/CreateProposal';
 import { useContracts } from './hooks/useContracts';
-import { ProposalDetails } from './ProposalDetails';
-import { ProposalList } from './ProposalList';
-import { Proposal } from './type';
+import { ProposalDetails } from './components/ProposalDetails';
+import { ProposalList } from './components/ProposalList';
+import { Proposal } from './types/type';
 
 const { Header, Content }  = Layout;
 const { Title } = Typography;
@@ -17,6 +17,7 @@ const App: React.FC = () => {
 
   const handleSelectProposal = async (proposalAddress: string) => {
     if (web3Context.signer) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const { fetchProposalDetails } = useContracts(web3Context.signer);
       const proposalDetails = await fetchProposalDetails(proposalAddress);
       
